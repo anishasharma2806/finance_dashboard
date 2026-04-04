@@ -12,6 +12,57 @@ export const AppProvider = ({ children }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const getDashboardData = () => {
+    const data = getFilteredTransactions();
+
+    let income = 0;
+    let expenses = 0;
+    let savings = 0;
+
+    const categoryMap = {};
+    const monthlyMap = {};
+
+    data.forEach((t) => {
+      const date = new Date(t.date);
+      const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+
+      // totals
+      if (t.type === "income") income += t.amount;
+      if (t.type === "expense") expenses += t.amount;
+      if (t.type === "savings") savings += t.amount;
+
+      // category
+      if (t.type === "expense") {
+        categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+      }
+
+      // monthly trend
+      if (!monthlyMap[monthKey]) {
+        monthlyMap[monthKey] = { income: 0, expense: 0 };
+      }
+
+      if (t.type === "income") monthlyMap[monthKey].income += t.amount;
+      if (t.type === "expense") monthlyMap[monthKey].expense += t.amount;
+    });
+
+    const balance = income - expenses - savings;
+
+    return {
+      income,
+      expenses,
+      savings,
+      balance,
+      categoryData: Object.entries(categoryMap).map(([k, v]) => ({
+        name: k,
+        value: v,
+      })),
+      monthlyData: Object.entries(monthlyMap).map(([k, v]) => ({
+        name: k,
+        ...v,
+      })),
+    };
+  };
+
   // ✅ Load data
   useEffect(() => {
     const stored = localStorage.getItem("transactions");
@@ -119,6 +170,7 @@ export const AppProvider = ({ children }) => {
 
         filteredTransactions: getFilteredTransactions(),
         availableMonths: getAvailableMonths(),
+        dashboardData: getDashboardData(),
       }}
     >
       {children}

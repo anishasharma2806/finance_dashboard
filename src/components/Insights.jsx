@@ -43,8 +43,12 @@ const Insights = () => {
           {savings.length > 0 && (
             <div className="insight-box">
               <p className="insight-label">Highest Saving</p>
+
+              {/* keep this normal (black) */}
               <h2 className="insight-value">{highestSaving.category}</h2>
-              <span className="insight-sub">₹{highestSaving.amount}</span>
+
+              {/* make ONLY amount green */}
+              <span className="insight-sub green">₹{highestSaving.amount}</span>
             </div>
           )}
 
