@@ -16,7 +16,7 @@ import { useApp } from "../context/AppContext";
 const Charts = () => {
   const { filteredTransactions: transactions } = useApp();
 
-  // ✅ Line data
+  // Line data
   const lineData = transactions.map((t, index) => ({
     name: `T${index + 1}`,
     income: t.type === "income" ? t.amount : 0,
@@ -24,22 +24,32 @@ const Charts = () => {
     savings: t.type === "savings" ? t.amount : 0,
   }));
 
-  // ✅ Savings growth (cumulative)
+  // Savings trend
   let total = 0;
   const savingsTrend = transactions
     .filter((t) => t.type === "savings")
     .map((t, i) => {
       total += t.amount;
-      return {
-        name: `S${i + 1}`,
-        value: total,
-      };
+      return { name: `S${i + 1}`, value: total };
     });
 
-  // ✅ Pie data
-  const categoryData = Object.values(
+  // Expense pie
+  const expenseData = Object.values(
     transactions.reduce((acc, t) => {
       if (t.type === "expense") {
+        if (!acc[t.category]) {
+          acc[t.category] = { name: t.category, value: 0 };
+        }
+        acc[t.category].value += t.amount;
+      }
+      return acc;
+    }, {}),
+  );
+
+  // ✅ NEW: Income pie
+  const incomeData = Object.values(
+    transactions.reduce((acc, t) => {
+      if (t.type === "income") {
         if (!acc[t.category]) {
           acc[t.category] = { name: t.category, value: 0 };
         }
@@ -54,8 +64,8 @@ const Charts = () => {
   return (
     <div className="tour-charts">
       <div className="charts-grid">
-        {/* Main Chart */}
-        <div className="card">
+        {/* MAIN */}
+        <div className="card chart-main">
           <h3>Income vs Expense</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
@@ -71,19 +81,14 @@ const Charts = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Pie Chart */}
-        <div className="card">
+        {/* EXPENSE PIE */}
+        <div className="card chart-expense">
           <h3>Expense Breakdown</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie
-                data={categoryData}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={80}
-              >
-                {categoryData.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Pie data={expenseData} dataKey="value" outerRadius={80}>
+                {expenseData.map((entry, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -92,8 +97,8 @@ const Charts = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Savings Growth */}
-        <div className="card">
+        {/* SAVINGS */}
+        <div className="card chart-savings">
           <h3>Savings Growth</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={savingsTrend}>
@@ -103,6 +108,22 @@ const Charts = () => {
               <Tooltip />
               <Line dataKey="value" stroke="#8b5cf6" />
             </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* ✅ INCOME PIE */}
+        <div className="card chart-income">
+          <h3>Income Breakdown</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie data={incomeData} dataKey="value" outerRadius={80}>
+                {incomeData.map((entry, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
           </ResponsiveContainer>
         </div>
       </div>

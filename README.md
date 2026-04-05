@@ -1,16 +1,121 @@
-# React + Vite
+# Finance Dashboard UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This project is a frontend-based Finance Dashboard built to visualize and manage financial data in a clean and interactive way.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+It allows users to:
 
-## React Compiler
+- View financial summaries
+- Explore transactions
+- Analyze spending patterns
+- Switch roles (Admin / Viewer)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Dashboard Overview
+
+- Summary cards (Balance, Income, Expenses)
+- Time-based visualization (trend chart)
+- Category-based visualization (expense breakdown)
+
+### Transactions
+
+- View transaction list
+- Filter by date/month
+- Add transactions (Admin only)
+- Search / sorting support
+
+### Role-Based UI
+
+- Viewer → read-only access
+- Admin → add/manage transactions
+
+### Insights
+
+- Highest spending category
+- Monthly comparison
+- Smart financial observations
+
+### State Management
+
+- Centralized using React Context API
+- Filters and UI stay in sync
+
+---
+
+## Tech Stack
+
+- React
+- JavaScript (ES6+)
+- CSS
+- Recharts (for charts)
+
+---
+
+## Responsiveness
+
+- Works across desktop and smaller screens
+- Flexible grid layout
+
+---
+
+## Optional Enhancements Implemented
+
+- Role switching
+- Modal-based transaction entry
+- Interactive UI elements
+
+---
+
+## Project Structure
+
+```
+src/
+  components/
+  context/
+  data/
+  App.jsx
+  main.jsx
+  index.css
+```
+
+---
+
+## How to Run
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## Approach
+
+This project focuses on:
+
+- Clean component structure
+- Reusable UI
+- Centralized state management
+- Real-world dashboard behavior simulation
+
+---
+
+## Notes
+
+- Works on Frontend no backend integrated
+- Designed for frontend evaluation purposes
+
+---
+
+## Future Improvements
+
+- Dark mode
+- API integration
+- Export data (CSV/JSON)
+- Advanced analytics
+
+---

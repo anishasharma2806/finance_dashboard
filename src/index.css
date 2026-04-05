@@ -874,3 +874,53 @@ body {
   border-radius: 8px;
   pointer-events: none;
 }
+
+/* ===== FINAL CHART CONTROL (NO BREAKAGE) ===== */
+
+.charts-grid {
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "main expense"
+    "savings income";
+}
+
+/* Assign areas */
+.chart-main {
+  grid-area: main;
+}
+
+.chart-expense {
+  grid-area: expense;
+}
+
+.chart-savings {
+  grid-area: savings;
+}
+
+.chart-income {
+  grid-area: income;
+}
+
+.undo-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 9999;
+}
+
+.undo-bar button {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}

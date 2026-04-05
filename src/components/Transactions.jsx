@@ -9,31 +9,47 @@ const Transactions = () => {
     filter,
     setFilter,
     deleteTransaction,
-    toggleComplete,
+    addTransaction,
   } = useApp();
 
   const [showModal, setShowModal] = useState(false);
+  const [selected, setSelected] = useState([]);
 
-  const getStatus = (t) => {
-    const today = new Date().toISOString().split("T")[0];
+  // 🔥 UNDO STATE
+  const [deletedItems, setDeletedItems] = useState([]);
+  const [showUndo, setShowUndo] = useState(false);
 
-    if (t.type === "savings") return "completed";
-    if (t.completed) return "completed";
+  const toggleSelect = (id) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
+  };
 
-    // ✅ FIX: instant expenses auto-complete
-    if (t.type === "expense" && !t.isReminder) {
-      return "completed";
+  const selectAll = (filtered) => {
+    if (selected.length === filtered.length) {
+      setSelected([]);
+    } else {
+      setSelected(filtered.map((t) => t.id));
     }
+  };
 
-    if (t.type === "income" && !t.isReminder) {
-      if (t.date > today) return "upcoming";
-      return "completed";
-    }
+  const deleteSelected = () => {
+    const toDelete = transactions.filter((t) => selected.includes(t.id));
 
-    if (t.date > today) return "upcoming";
-    if (t.date === today) return "today";
+    setDeletedItems(toDelete);
 
-    return "missed";
+    toDelete.forEach((t) => deleteTransaction(t.id));
+
+    setSelected([]);
+    setShowUndo(true);
+
+    setTimeout(() => setShowUndo(false), 5000);
+  };
+
+  const undoDelete = () => {
+    deletedItems.forEach((t) => addTransaction(t));
+    setDeletedItems([]);
+    setShowUndo(false);
   };
 
   const filtered = transactions.filter((t) =>
@@ -44,6 +60,7 @@ const Transactions = () => {
     <>
       <div className="tour-transactions">
         <div className="card mb-20">
+          {/* TOP BAR */}
           <div className="flex-row">
             <input
               className="input"
@@ -53,106 +70,81 @@ const Transactions = () => {
             />
 
             {role === "admin" && (
-              <div className="tour-add-btn">
-                <button className="btn" onClick={() => setShowModal(true)}>
-                  + Add
-                </button>
-              </div>
+              <>
+                <div className="tour-add-btn">
+                  <button className="btn" onClick={() => setShowModal(true)}>
+                    + Add
+                  </button>
+                </div>
+
+                {selected.length > 0 && (
+                  <button className="delete-btn" onClick={deleteSelected}>
+                    Delete ({selected.length})
+                  </button>
+                )}
+              </>
             )}
           </div>
 
           {filtered.length === 0 ? (
-            <p style={{ textAlign: "center", padding: "20px", color: "#666" }}>
-              No transactions yet. Switch to Admin to add.
+            <p style={{ textAlign: "center", padding: "20px" }}>
+              No transactions yet.
             </p>
           ) : (
             <div className="table-container">
               <table className="table">
                 <thead>
                   <tr>
+                    {role === "admin" && (
+                      <th>
+                        <input
+                          type="checkbox"
+                          checked={selected.length === filtered.length}
+                          onChange={() => selectAll(filtered)}
+                        />
+                      </th>
+                    )}
                     <th>Date</th>
                     <th>Category</th>
                     <th>Amount</th>
                     <th>Type</th>
                     {role === "admin" && <th>Action</th>}
-                    <th>Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {filtered.map((t) => (
                     <tr key={t.id}>
+                      {role === "admin" && (
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selected.includes(t.id)}
+                            onChange={() => toggleSelect(t.id)}
+                          />
+                        </td>
+                      )}
+
                       <td>{t.date}</td>
                       <td>{t.category}</td>
                       <td>₹{t.amount}</td>
-
-                      <td
-                        className={
-                          t.type === "income"
-                            ? "green"
-                            : t.type === "savings"
-                              ? "purple"
-                              : "red"
-                        }
-                      >
-                        {t.type}
-                      </td>
+                      <td>{t.type}</td>
 
                       {role === "admin" && (
                         <td>
-                          {(() => {
-                            const today = new Date()
-                              .toISOString()
-                              .split("T")[0];
-
-                            if (t.type === "savings") return null;
-
-                            if (t.type === "expense" && t.isReminder) {
-                              return (
-                                <button
-                                  className={`done-btn ${
-                                    t.completed ? "undo" : ""
-                                  }`}
-                                  onClick={() => toggleComplete(t.id)}
-                                >
-                                  {t.completed ? "Undo" : "Done"}
-                                </button>
-                              );
-                            }
-
-                            if (
-                              t.type === "income" &&
-                              t.isReminder &&
-                              !t.completed &&
-                              t.date > today
-                            ) {
-                              return (
-                                <button
-                                  className="done-btn"
-                                  onClick={() => toggleComplete(t.id)}
-                                >
-                                  Done
-                                </button>
-                              );
-                            }
-
-                            return null;
-                          })()}
-
                           <button
                             className="delete-btn"
-                            onClick={() => deleteTransaction(t.id)}
+                            onClick={() => {
+                              setDeletedItems([t]);
+                              deleteTransaction(t.id);
+                              setShowUndo(true);
+                              setTimeout(() => setShowUndo(false), 5000);
+                            }}
                           >
                             Delete
                           </button>
                         </td>
                       )}
-
-                      <td>
-                        <span className={`status ${getStatus(t)}`}>
-                          {getStatus(t)}
-                        </span>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -161,6 +153,14 @@ const Transactions = () => {
           )}
         </div>
       </div>
+
+      {/* 🔥 UNDO BAR */}
+      {showUndo && (
+        <div className="undo-bar">
+          Transaction deleted
+          <button onClick={undoDelete}>Undo</button>
+        </div>
+      )}
 
       {showModal && <AddTransactionModal close={() => setShowModal(false)} />}
     </>
