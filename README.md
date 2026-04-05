@@ -2,71 +2,78 @@
 
 ## Overview
 
-This project is a frontend-based Finance Dashboard built to visualize and manage financial data in a clean and interactive way.
+This is a frontend-based Finance Dashboard designed to simulate real-world financial tracking and analysis.
 
-It allows users to:
+The application enables users to monitor financial activity, manage transactions, and gain insights through an interactive and dynamic user interface.
 
-- View financial summaries
-- Explore transactions
-- Analyze spending patterns
-- Switch roles (Admin / Viewer)
+It focuses on **frontend architecture, state management, and user experience**, rather than backend integration.
 
 ---
 
-## Features
+## Key Features
 
 ### Dashboard Overview
 
-- Summary cards (Balance, Income, Expenses)
-- Time-based visualization (trend chart)
-- Category-based visualization (expense breakdown)
+- Summary cards (Balance, Income, Expenses, Savings)
+- Time-based visualization (Income vs Expense trend)
+- Category-based breakdown (Expense distribution)
+- Savings growth tracking
 
-### Transactions
+### Transactions Management
 
-- View transaction list
-- Filter by date/month
+- View and search transactions
+- Filter by date and month
 - Add transactions (Admin only)
-- Search / sorting support
+- Delete individual transactions
+- Bulk selection with multi-delete support
+- **Undo delete functionality (Gmail-style recovery)**
 
 ### Role-Based UI
 
-- Viewer → read-only access
-- Admin → add/manage transactions
+- Viewer: Read-only access
+- Admin: Full control (add, delete, manage)
+- UI dynamically adapts based on selected role
+
+### Guided Walkthrough (Onboarding)
+
+- First-time user walkthrough
+- Separate flows for Viewer and Admin
+- Manual “Start Tour” option
+- Context-aware steps based on UI state
 
 ### Insights
 
-- Highest spending category
-- Monthly comparison
-- Smart financial observations
+- Highest spending category detection
+- Financial observations based on transactions
+- Conditional rendering when data is available
 
-### State Management
+### Smart UI Behavior
 
-- Centralized using React Context API
-- Filters and UI stay in sync
+- Graceful handling of empty states
+- Features appear dynamically based on data
+- Reminder-based transaction handling
+
+---
+
+## State Management
+
+- Implemented using **React Context API**
+- Manages:
+  - Transactions data
+  - Filters
+  - Role switching
+  - UI state
+
+- Ensures consistent and predictable data flow across components
 
 ---
 
 ## Tech Stack
 
-- React
+- React (Functional Components + Hooks)
 - JavaScript (ES6+)
-- CSS
-- Recharts (for charts)
-
----
-
-## Responsiveness
-
-- Works across desktop and smaller screens
-- Flexible grid layout
-
----
-
-## Optional Enhancements Implemented
-
-- Role switching
-- Modal-based transaction entry
-- Interactive UI elements
+- CSS (Custom styling)
+- Recharts (Data visualization)
 
 ---
 
@@ -93,29 +100,49 @@ npm run dev
 
 ---
 
-## Approach
+## Technical Decisions & Trade-offs
 
-This project focuses on:
+### Why Context API?
 
-- Clean component structure
-- Reusable UI
-- Centralized state management
-- Real-world dashboard behavior simulation
+Chosen for centralized state management without introducing unnecessary complexity like Redux.
+
+### Why LocalStorage?
+
+Used to simulate persistence and maintain state across sessions without requiring a backend.
+
+### Trade-offs
+
+- No backend → limited scalability
+- LocalStorage → not suitable for large datasets
+- Focus kept on frontend logic, UI behavior, and UX patterns
 
 ---
 
-## Notes
+## Limitations
 
-- Works on Frontend no backend integrated
-- Designed for frontend evaluation purposes
+- No authentication system
+- No backend or database integration
+- Data is stored locally in the browser
 
 ---
 
 ## Future Improvements
 
+- Backend integration (Firebase / Supabase)
+- Authentication system
 - Dark mode
-- API integration
-- Export data (CSV/JSON)
-- Advanced analytics
+- Export functionality (CSV / JSON)
+- Advanced analytics (monthly trends, predictions)
 
 ---
+
+## Summary
+
+This project goes beyond a basic dashboard by implementing:
+
+- Role-based UI behavior
+- Guided onboarding system
+- Bulk operations with undo functionality
+- Dynamic UI rendering based on state
+
+It focuses on simulating real product behavior rather than just displaying static data.

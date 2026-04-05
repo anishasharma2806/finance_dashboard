@@ -924,3 +924,31 @@ body {
   border-radius: 5px;
   cursor: pointer;
 }
+/* ===== MODAL BUTTON ROW FIX ===== */
+
+.modal-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.modal-btn-row .btn {
+  flex: 1;
+}
+
+/* Close button (RED) */
+.modal-btn-row .btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.modal-btn-row .btn-danger:hover {
+  background: #fecaca;
+}
+
+/* Mobile fallback */
+@media (max-width: 500px) {
+  .modal-btn-row {
+    flex-direction: column;
+  }
+}

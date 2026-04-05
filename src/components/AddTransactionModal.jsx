@@ -24,8 +24,6 @@ const AddTransactionModal = ({ close }) => {
       category: form.category,
       date: form.date,
       type: normalizedType,
-
-      // ✅ enforce clean data BEFORE sending
       isReminder: normalizedType === "expense" ? form.isReminder : false,
     });
 
@@ -83,9 +81,16 @@ const AddTransactionModal = ({ close }) => {
             </label>
           </div>
 
-          <button type="submit" className="btn">
-            Add
-          </button>
+          {/* 🔥 BUTTON ROW */}
+          <div className="modal-btn-row">
+            <button type="submit" className="btn">
+              Add
+            </button>
+
+            <button type="button" className="btn btn-danger" onClick={close}>
+              Close
+            </button>
+          </div>
         </form>
       </div>
     </div>
