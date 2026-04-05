@@ -48,12 +48,28 @@ const Header = () => {
     }
   };
 
+  // ✅ FIXED START TOUR (NO DOM, NO RELOAD)
+  const handleStartTour = () => {
+    if (role === "admin") {
+      localStorage.removeItem("seenAdminTour");
+    } else {
+      localStorage.removeItem("seenViewerTour");
+    }
+
+    window.dispatchEvent(new Event("start-tour"));
+  };
+
   return (
     <div className="header">
       <h1 className="title">Finance Dashboard</h1>
 
       <div className="header-right">
-        {/* 🔽 FILTER DROPDOWN */}
+        {/* ✅ START TOUR BUTTON */}
+        <button className="btn" onClick={handleStartTour}>
+          Start Tour
+        </button>
+
+        {/* 🔽 FILTER */}
         <div className="tour-filter">
           <div className="filter-group">
             <label className="filter-label">Filter</label>

@@ -852,3 +852,25 @@ body {
   border-radius: 8px;
   pointer-events: none;
 }
+
+/* FORCE overlay above EVERYTHING */
+.tour-overlay {
+  position: fixed;
+  z-index: 999999 !important;
+}
+
+/* popup ALWAYS top */
+.tour-box {
+  position: relative;
+  z-index: 1000000 !important;
+}
+
+/* highlight BELOW popup */
+.tour-highlight {
+  position: relative;
+  z-index: 999998 !important;
+  outline: 3px solid #2563eb;
+  outline-offset: 4px;
+  border-radius: 8px;
+  pointer-events: none;
+}

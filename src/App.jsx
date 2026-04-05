@@ -4,7 +4,7 @@ import Charts from "./components/Charts";
 import Transactions from "./components/Transactions";
 import Insights from "./components/Insights";
 import ReminderModal from "./components/ReminderModal";
-import Onboarding from "./components/Onboarding";
+
 import Walkthrough from "./components/Walkthrough";
 import { useState, useEffect } from "react";
 import { useApp } from "./context/AppContext";
@@ -28,7 +28,7 @@ function App() {
       <Walkthrough />
       <Header />
       <div className="app-container">
-        <Onboarding />
+        {/* Onboarding Removed as Walkthrough is added */}
         <SummaryCards />
         <Charts />
         <Transactions />
