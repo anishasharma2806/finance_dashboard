@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { useApp } from "../context/AppContext";
 
-const steps = [
+const baseSteps = [
   {
     selector: ".tour-summary",
     text: "This shows your financial summary.",
@@ -8,6 +9,7 @@ const steps = [
   {
     selector: ".tour-add-btn",
     text: "Click here to add transactions (Admin only).",
+    adminOnly: true,
   },
   {
     selector: ".tour-filter",
@@ -24,38 +26,54 @@ const steps = [
 ];
 
 const Walkthrough = () => {
+  const { role, transactions } = useApp();
+
   const [stepIndex, setStepIndex] = useState(0);
   const [visible, setVisible] = useState(false);
   const [started, setStarted] = useState(false);
+  const [activeElement, setActiveElement] = useState(null);
+  const [showFinal, setShowFinal] = useState(false);
 
+  // ✅ Filter steps based on role
+  const steps = baseSteps.filter((step) => !step.adminOnly || role === "admin");
+
+  // ✅ Show only first time
   useEffect(() => {
     const seen = localStorage.getItem("seenTour");
-    if (!seen) {
-      setVisible(true);
-    }
+    if (!seen) setVisible(true);
   }, []);
 
+  // ✅ Highlight logic (stable)
   useEffect(() => {
-    if (!started) return;
+    if (!started || showFinal) return;
 
     const step = steps[stepIndex];
+    if (!step) return;
+
     const element = document.querySelector(step.selector);
+    if (!element) return;
 
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // 🔥 Highlight effect
-      element.classList.add("tour-highlight");
-
-      return () => {
-        element.classList.remove("tour-highlight");
-      };
+    // Remove previous highlight
+    if (activeElement) {
+      activeElement.classList.remove("tour-highlight");
     }
-  }, [stepIndex, started]);
+
+    setActiveElement(element);
+
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const timer = setTimeout(() => {
+      element.classList.add("tour-highlight");
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [stepIndex, started, role, showFinal]);
 
   if (!visible) return null;
 
-  // 👉 BEFORE START SCREEN
+  // 👉 STEP 1: Welcome screen
   if (!started) {
     return (
       <div className="tour-overlay">
@@ -83,13 +101,67 @@ const Walkthrough = () => {
     );
   }
 
-  // 👉 MAIN TOUR
+  // 👉 STEP 3: Final screen (conditional)
+  if (showFinal) {
+    return (
+      <div className="tour-overlay">
+        <div className="tour-box">
+          <h3>You're all set 🎉</h3>
+
+          <p style={{ marginTop: "10px" }}>
+            Some features will appear once you start adding data:
+          </p>
+
+          <ul
+            style={{
+              textAlign: "left",
+              marginTop: "10px",
+              paddingLeft: "18px",
+            }}
+          >
+            <li>
+              <strong>Done / Undo:</strong> Manage reminders
+            </li>
+            <li>
+              <strong>Reminder Popup:</strong> Alerts for pending tasks
+            </li>
+            <li>
+              <strong>Status Labels:</strong> Shows transaction state
+            </li>
+          </ul>
+
+          <p style={{ marginTop: "10px", color: "#555" }}>
+            Switch to <strong>Admin</strong> and add transactions to explore
+            them.
+          </p>
+
+          <div className="tour-actions">
+            <button
+              onClick={() => {
+                localStorage.setItem("seenTour", true);
+                setVisible(false);
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 👉 STEP 2: Main walkthrough
   const handleNext = () => {
     if (stepIndex < steps.length - 1) {
       setStepIndex((prev) => prev + 1);
     } else {
-      localStorage.setItem("seenTour", true);
-      setVisible(false);
+      // Only show final screen if no data
+      if (transactions.length === 0) {
+        setShowFinal(true);
+      } else {
+        localStorage.setItem("seenTour", true);
+        setVisible(false);
+      }
     }
   };
 
@@ -101,7 +173,7 @@ const Walkthrough = () => {
   return (
     <div className="tour-overlay">
       <div className="tour-box">
-        <p>{steps[stepIndex].text}</p>
+        <p>{steps[stepIndex]?.text}</p>
 
         <div className="tour-actions">
           <button onClick={handleSkip}>Skip</button>

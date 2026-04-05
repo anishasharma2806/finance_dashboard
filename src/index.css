@@ -836,3 +836,19 @@ body {
   transform: translateY(-1px);
   opacity: 0.9;
 }
+
+/* ===== WALKTHROUGH FINAL STABILITY ===== */
+
+.tour-box {
+  position: relative;
+  z-index: 10002;
+}
+
+.tour-highlight {
+  position: relative;
+  z-index: 10001;
+  outline: 3px solid #2563eb;
+  outline-offset: 4px;
+  border-radius: 8px;
+  pointer-events: none;
+}
