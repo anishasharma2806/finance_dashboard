@@ -682,3 +682,157 @@ body {
   max-width: 1500px;
   margin: auto;
 }
+
+.card ul {
+  line-height: 1.6;
+}
+
+/* ===== WALKTHROUGH SAFE WRAPPERS ===== */
+
+.tour-add-btn {
+  display: flex;
+}
+
+.tour-filter {
+  display: flex;
+}
+
+.tour-summary {
+  width: 100%;
+}
+
+.tour-charts {
+  width: 100%;
+}
+
+/* ===== CUSTOM WALKTHROUGH ===== */
+
+.tour-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.tour-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.tour-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* ===== WALKTHROUGH UPGRADE ===== */
+
+.tour-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.tour-box {
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.tour-box h3 {
+  margin-bottom: 10px;
+}
+
+.tour-box p {
+  font-size: 14px;
+  color: #555;
+}
+
+.tour-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.tour-actions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tour-actions button:first-child {
+  background: #ddd;
+}
+
+.tour-actions button:last-child {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* 🔥 Highlight effect */
+.tour-highlight {
+  position: relative;
+  z-index: 10000;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.6);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* ===== WALKTHROUGH FINAL FIX ===== */
+
+/* Ensure overlay sits above app */
+.tour-overlay {
+  z-index: 9999;
+}
+
+/* Ensure popup is ALWAYS on top */
+.tour-box {
+  position: relative;
+  z-index: 10002;
+}
+
+/* Highlight BELOW popup */
+.tour-highlight {
+  position: relative;
+  z-index: 10001;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.6);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Prevent highlight from blocking clicks */
+.tour-highlight {
+  pointer-events: none;
+}
+
+/* Improve button UX (since yours were plain) */
+.tour-actions button {
+  transition: all 0.2s ease;
+}
+
+.tour-actions button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}

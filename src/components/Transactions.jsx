@@ -52,9 +52,11 @@ const Transactions = () => {
           />
 
           {role === "admin" && (
-            <button className="btn" onClick={() => setShowModal(true)}>
-              + Add
-            </button>
+            <div className="tour-add-btn">
+              <button className="btn" onClick={() => setShowModal(true)}>
+                + Add
+              </button>
+            </div>
           )}
         </div>
 

@@ -54,26 +54,28 @@ const Header = () => {
 
       <div className="header-right">
         {/* 🔽 FILTER DROPDOWN */}
-        <div className="filter-group">
-          <label className="filter-label">Filter</label>
-          <select onChange={handleChange} className="select">
-            <option value="all">All Time</option>
-            <option value="current">This Month</option>
-            <option value="last">Last Month</option>
-            <option value="custom">Custom Range</option>
+        <div className="tour-filter">
+          <div className="filter-group">
+            <label className="filter-label">Filter</label>
+            <select onChange={handleChange} className="select">
+              <option value="all">All Time</option>
+              <option value="current">This Month</option>
+              <option value="last">Last Month</option>
+              <option value="custom">Custom Range</option>
 
-            {availableMonths?.map((m, index) => (
-              <option key={index} value={`${m.year}-${m.month}`}>
-                {new Date(m.year, m.month).toLocaleString("default", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </option>
-            ))}
-          </select>
+              {availableMonths?.map((m, index) => (
+                <option key={index} value={`${m.year}-${m.month}`}>
+                  {new Date(m.year, m.month).toLocaleString("default", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* 📅 CUSTOM RANGE (ONLY WHEN SELECTED) */}
+        {/* 📅 CUSTOM RANGE */}
         {rangeType === "custom" && (
           <div className="date-range">
             <div className="date-field">

@@ -48,26 +48,28 @@ const SummaryCards = () => {
       : 0;
 
   return (
-    <div className="summary-grid">
-      <div className="card premium highlight">
-        <p>Main Balance</p>
-        <h2>₹{format(mainBalance)}</h2>
-      </div>
+    <div className="tour-summary">
+      <div className="summary-grid">
+        <div className="card premium highlight">
+          <p>Main Balance</p>
+          <h2>₹{format(mainBalance)}</h2>
+        </div>
 
-      <div className="card premium savings">
-        <p>Savings</p>
-        <h2>₹{format(savings)}</h2>
-      </div>
+        <div className="card premium savings">
+          <p>Savings</p>
+          <h2>₹{format(savings)}</h2>
+        </div>
 
-      <div className="card premium income">
-        <p>Income</p>
-        <h2>₹{format(income)}</h2>
-        <span className="trend">{incomeChange}% vs last month</span>
-      </div>
+        <div className="card premium income">
+          <p>Income</p>
+          <h2>₹{format(income)}</h2>
+          <span className="trend">{incomeChange}% vs last month</span>
+        </div>
 
-      <div className="card premium expense">
-        <p>Expenses</p>
-        <h2>₹{format(expenses)}</h2>
+        <div className="card premium expense">
+          <p>Expenses</p>
+          <h2>₹{format(expenses)}</h2>
+        </div>
       </div>
     </div>
   );
