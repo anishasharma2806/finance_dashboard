@@ -613,7 +613,8 @@ body {
 
 /* Fix chart container height */
 .recharts-responsive-container {
-  min-height: 260px;
+  width: 100% !important;
+  height: 260px !important;
 }
 
 /* Base card */
@@ -875,13 +876,15 @@ body {
   pointer-events: none;
 }
 
-/* ===== FINAL CHART CONTROL (NO BREAKAGE) ===== */
+/* ===== FINAL CHART CONTROL (FIXED RESPONSIVE) ===== */
 
 .charts-grid {
+  display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     "main expense"
     "savings income";
+  gap: 20px;
 }
 
 /* Assign areas */
@@ -899,6 +902,18 @@ body {
 
 .chart-income {
   grid-area: income;
+}
+
+/* ✅ CRITICAL FIX (YOU WERE MISSING THIS) */
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "main"
+      "expense"
+      "savings"
+      "income";
+  }
 }
 
 .undo-bar {

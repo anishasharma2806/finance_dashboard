@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useApp } from "../context/AppContext";
 
+/* =========================
+   👁️ VIEWER STEPS
+========================= */
 const viewerSteps = [
   { selector: ".summary-grid", text: "This shows your financial summary." },
   { selector: ".tour-filter", text: "Use filters to analyze your data." },
@@ -9,9 +12,32 @@ const viewerSteps = [
   { selector: ".tour-insights", text: "Here are your financial insights." },
 ];
 
-const adminSteps = [
-  { selector: ".tour-add-btn", text: "Click here to add transactions." },
-];
+/* =========================
+   🔐 ADMIN STEPS (DYNAMIC)
+========================= */
+const getAdminSteps = (hasData) => {
+  const steps = [
+    {
+      selector: ".tour-add-btn",
+      text: "Click here to add transactions.",
+    },
+  ];
+
+  if (hasData) {
+    steps.push(
+      {
+        selector: ".tour-transactions",
+        text: "Manage your transactions here.",
+      },
+      {
+        selector: ".delete-btn",
+        text: "You can delete transactions here.",
+      },
+    );
+  }
+
+  return steps;
+};
 
 const Walkthrough = () => {
   const { role, transactions } = useApp();
@@ -21,16 +47,18 @@ const Walkthrough = () => {
   const [steps, setSteps] = useState([]);
   const [stepIndex, setStepIndex] = useState(0);
   const [activeEl, setActiveEl] = useState(null);
-  const [mode, setMode] = useState(""); // 👈 key fix
+  const [mode, setMode] = useState("");
   const [showFinal, setShowFinal] = useState(false);
 
-  // =========================
-  // 🎯 START TOUR BUTTON
-  // =========================
+  /* =========================
+     🎯 START TOUR BUTTON
+  ========================= */
   useEffect(() => {
     const handler = () => {
+      const hasData = transactions.length > 0;
+
       if (role === "admin") {
-        setSteps([...viewerSteps, ...adminSteps]); // FULL ADMIN TOUR
+        setSteps([...viewerSteps, ...getAdminSteps(hasData)]);
         setMode("manual-admin");
       } else {
         setSteps(viewerSteps);
@@ -45,11 +73,11 @@ const Walkthrough = () => {
 
     window.addEventListener("start-tour", handler);
     return () => window.removeEventListener("start-tour", handler);
-  }, [role]);
+  }, [role, transactions]);
 
-  // =========================
-  // 🎯 FIRST VISIT (VIEWER ONLY)
-  // =========================
+  /* =========================
+     🎯 FIRST VISIT (VIEWER)
+  ========================= */
   useEffect(() => {
     const seenViewer = localStorage.getItem("seenViewerTour");
 
@@ -63,25 +91,27 @@ const Walkthrough = () => {
     }
   }, [role]);
 
-  // =========================
-  // 🎯 FIRST ADMIN SWITCH
-  // =========================
+  /* =========================
+     🎯 FIRST ADMIN SWITCH
+  ========================= */
   useEffect(() => {
     const seenAdmin = localStorage.getItem("seenAdminTour");
 
     if (role === "admin" && !seenAdmin) {
-      setSteps(adminSteps); // 👈 ONLY ADMIN
+      const hasData = transactions.length > 0;
+
+      setSteps(getAdminSteps(hasData)); // ✅ FIXED
       setMode("first-admin");
       setVisible(true);
       setStarted(false);
       setStepIndex(0);
       setShowFinal(false);
     }
-  }, [role]);
+  }, [role, transactions]);
 
-  // =========================
-  // 🎯 HIGHLIGHT ENGINE
-  // =========================
+  /* =========================
+     🎯 HIGHLIGHT ENGINE
+  ========================= */
   useEffect(() => {
     if (!started || showFinal) return;
 
@@ -106,9 +136,9 @@ const Walkthrough = () => {
 
   if (!visible) return null;
 
-  // =========================
-  // 👉 WELCOME
-  // =========================
+  /* =========================
+     👉 WELCOME SCREEN
+  ========================= */
   if (!started) {
     return (
       <div className="tour-overlay">
@@ -125,9 +155,9 @@ const Walkthrough = () => {
     );
   }
 
-  // =========================
-  // 👉 FINAL SCREEN (FIXED)
-  // =========================
+  /* =========================
+     👉 FINAL SCREEN
+  ========================= */
   if (showFinal) {
     return (
       <div className="tour-overlay">
@@ -139,8 +169,8 @@ const Walkthrough = () => {
           <ul style={{ textAlign: "left", marginTop: "10px" }}>
             <li>✔ Done / Undo buttons</li>
             <li>✔ Reminder popup alerts</li>
-            <li>✔ Transaction completion tracking</li>
-            <li>✔ Dynamic insights updates</li>
+            <li>✔ Transaction tracking</li>
+            <li>✔ Dynamic insights</li>
           </ul>
 
           <div className="tour-actions">
@@ -159,14 +189,13 @@ const Walkthrough = () => {
     );
   }
 
-  // =========================
-  // 👉 NEXT LOGIC (CRITICAL FIX)
-  // =========================
+  /* =========================
+     👉 NEXT STEP LOGIC
+  ========================= */
   const next = () => {
     if (stepIndex < steps.length - 1) {
       setStepIndex((p) => p + 1);
     } else {
-      // 👇 show final ONLY for first viewer OR manual full tour
       if (
         transactions.length === 0 &&
         (mode === "first-viewer" || mode === "manual-admin")
@@ -175,7 +204,6 @@ const Walkthrough = () => {
         return;
       }
 
-      // mark completion properly
       if (mode === "first-viewer") {
         localStorage.setItem("seenViewerTour", true);
       }
